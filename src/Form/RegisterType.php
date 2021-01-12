@@ -15,11 +15,8 @@ class RegisterType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('password', RepeatedType::class, [
-               'first_name' => 'password',
-               'second_name' => 'password_confirm',
-               'type' => PasswordType::class
-            ]);
+            ->add('password', PasswordType::class)
+            ->add('password_confirm', PasswordType::class);
         ;
     }
 

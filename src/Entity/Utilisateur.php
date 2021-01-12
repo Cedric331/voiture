@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Repository\UtilisateurRepository;
+use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  * @UniqueEntity("username", message="Le nom est déjà pris")
  */
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     /**
      * @ORM\Id
@@ -22,18 +24,35 @@ class Utilisateur
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 10,
+     *      minMessage = "Le nom est trop court",
+     *      maxMessage = "Le nom est trop long"
+     * )
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Assert\Length(
+     *      min = 8,
+     *      max = 100,
+     *      minMessage = "Le mot de passe est trop court",
+     *      maxMessage = "Le mot de passe est trop long"
+     * )
      */
     private $password;
 
    /**
-     * @Assert\EqualTo(propertyPath="password", message="Le mot de passe n'est pas identique")
+     * @Assert\EqualTo(propertyPath="password", message = "Le mot de passe n'est pas identique")
      */
     private $password_confirm;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $roles;
 
     public function getId(): ?int
     {
@@ -74,5 +93,25 @@ class Utilisateur
         $this->password_confirm = $password_confirm;
 
         return $this;
+    }
+
+    public function getRoles()
+    {
+        return [$this->roles];
+    }
+
+    public function setRoles(string $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function getSalt()
+    {
     }
 }
