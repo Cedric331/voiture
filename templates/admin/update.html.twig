@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Voitures{% endblock %}
+
+{% block titre %}
+{% if isUpdate %}
+Modification voiture
+{% else %}
+Création d'une voiture 
+{% endif %}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+   {{ form_start(form) }}
+   {{ form_widget(form) }}
+   <a class="btn btn-primary" href="{{path('admin')}}">Revenir sur le catalogue</a>
+   {{ form_end(form) }}
+</div>
+
+{% endblock %}

@@ -6,26 +6,80 @@
 
 {% block body %}
 
-
-   <div class="container">
-   <div class="row d-flex justify-content-center">
-      {% for voiture in voitures %}
-         <div class="card bg-light col-lg-3 col-md-5 col-sm-11 mx-2 mt-2 p-2">
-           <img src="{{ asset('images/' ~ voiture.modele.image)}}" class="card-img-top img-fluid rounded img-thumbnail" alt="{{voiture.modele.libelle}}"/>
-           <div class="card-body">
-             <h5 class="card-title">{{voiture.immatriculation}}</h5>
-             <hr>
-             <ul class="list-group list-group-flush">
-                  <li class="bg-light list-group-item">Marque: {{voiture.modele.marque.libelle}}</li>
-                  <li class="bg-light list-group-item">Modéle: {{voiture.modele.libelle}}</li>
-                  <li class="bg-light list-group-item">Nombre de Porte: {{voiture.nbPortes}}</li>
-                  <li class="bg-light list-group-item">Année: {{voiture.annee}}</li>
-             </ul>
-             <a href="#!" class="col-12 btn btn-primary mt-2">Voir la voiture</a>
-           </div>
-         </div>
-      {% endfor %}
+{% for message in app.flashes('success') %}
+   <div class="alert alert-success">
+      {{ message }}
    </div>
+{% endfor %}
+   <div class="container">
+      {{ form_start(form) }}
+   <div class="row no-guetters align-items-center text-center">
+      <div class="col-auto">
+         {{ form_row(form.minAnnee) }}
+      </div>
+      <div class="col-auto">
+         {{ form_row(form.maxAnnee) }}
+      </div>
+      <div class="col-4 mt-2">
+         <input value="Recherche" class="col-8 btn btn-light" type="submit">
+      </div>
+   </div>
+      {{ form_end(form) }}
+ 
+            <form action="{{ path('session_reset') }}" method="POST">
+               <input value="Reset" class="btn btn-light" type="submit">
+            </form>
+      {% if admin %}
+         <a href="{{ path('admin_create') }}" class="col-12 btn btn-success mt-2">Ajouter une voiture</a>
+      {% endif %}
+  
+      {# <form action="{{ path('voitures_recherche')}}" method="POST">
+         <div class="row g-3 align-items-center">
+            <div class="col-auto">
+               <label for="inputPassword6" class="col-form-label">Annee : </label>
+            </div>
+            <div class="col-auto">
+               <input type="number" name="annee1" class="form-control">
+            </div>
+
+            <div class="col-auto">
+               <label for="inputPassword6" class="col-form-label">Annee : </label>
+            </div>
+            <div class="col-auto">
+               <input type="number" name="annee2" class="form-control">
+            </div>
+         <input value="Recherche" type="submit">
+         </div>
+      </form> #}
+
+      <div class="row d-flex justify-content-center">
+         {% for voiture in voitures %}
+            <div class="card bg-light col-lg-3 col-md-5 col-sm-11 mx-2 mt-2 p-2">
+              <img src="{{ asset('images/' ~ voiture.modele.image)}}" class="card-img-top img-fluid rounded img-thumbnail" alt="{{voiture.modele.libelle}}"/>
+              <div class="card-body">
+                <h5 class="card-title">{{voiture.immatriculation}}</h5>
+                <hr>
+                <ul class="list-group list-group-flush">
+                     <li class="bg-light list-group-item">Marque: {{voiture.modele.marque.libelle}}</li>
+                     <li class="bg-light list-group-item">Modéle: {{voiture.modele.libelle}}</li>
+                     <li class="bg-light list-group-item">Nombre de Porte: {{voiture.nbPortes}}</li>
+                     <li class="bg-light list-group-item">Année: {{voiture.annee}}</li>
+                </ul>
+                <a href="#!" class="col-12 btn btn-primary mt-2">Voir la voiture</a>
+                {% if admin %}
+                  <a href="{{ path('admin_update', {'id': voiture.id }) }}" class="col-12 btn btn-info mt-2">Modifier</a>
+                  <form action="{{ path('admin_delete', {'id': voiture.id }) }}" method="POST" onsubmit="return confirm('Voulez-vous supprimer l\'élément')">
+                     <input type="hidden" name="_token" value="{{ csrf_token('DEL' ~ voiture.id) }}">
+                     <input class="col-12 btn btn-warning mt-2" value="Supprimer" type="submit">
+                  </form>
+               {% endif %}
+              </div>
+            </div>
+         {% endfor %}
+      </div>
+         <div class="navigation my-2">
+            {{ knp_pagination_render(voitures) }}
+         </div>
    </div>
 
 
